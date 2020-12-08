@@ -15,6 +15,9 @@ namespace TicTacToe
 
         private Boolean isX = true;
         private HashSet<Button[]> combinations;
+        private string playerXName = "Player X";
+        private string playerOName = "Player O";
+        
 
         public Main_Form()
         {
@@ -41,22 +44,34 @@ namespace TicTacToe
         private void updateButtonData(object sender)
         {
             Button clickedButton = sender as Button;
+            clickedButton.Enabled = false;
             if (isX)
             {
                 clickedButton.Text = "X";
                 isX = false;
+                updateNextTurn();
             } 
             
             else
             {
                 clickedButton.Text = "O";
                 isX = true;
+                updateNextTurn();
             }
-            checkit();
+            checkGameComplete();
         }
 
-        public void checkit()
+        private void updateNextTurn()
         {
+            if (isX)
+                nextTurnLabel.Text = playerXName;
+            else
+                nextTurnLabel.Text = playerOName;
+        }
+
+        private void checkGameComplete()
+        {
+            // Check all combinations
             foreach(Button[] combination in combinations)
             {
                 if (combination[0].Text != "" && combination[1].Text != "" && combination[2].Text != "")
@@ -69,15 +84,67 @@ namespace TicTacToe
                         if (combination[0].Text == "X")
                         {
                             MessageBox.Show("Player X Wins!");
+                            var a = Int32.Parse(playerXPointsTextBox.Text) + 1;
+                            playerXPointsTextBox.Text = a.ToString();
+                            newGame();
                         }
                         else
                         {
                             MessageBox.Show("Player O Wins!");
+                            var a = Int32.Parse(playerOPointsTextBox.Text) + 1;
+                            playerOPointsTextBox.Text = a.ToString();
+                            newGame();
                         }
 
                     }
                 }
+                // Check if all buttons are clicked
+                if (!button1.Enabled && !button2.Enabled && !button3.Enabled && !button4.Enabled && !button5.Enabled && !button6.Enabled && !button7.Enabled && !button8.Enabled && !button9.Enabled)
+                {
+                    MessageBox.Show("It's a tie!");
+                    newGame();
+                }
             }
+        }
+
+        private void newGame()
+        {
+            resetButton(button1);
+            resetButton(button2);
+            resetButton(button3);
+            resetButton(button4);
+            resetButton(button5);
+            resetButton(button6);
+            resetButton(button7);
+            resetButton(button8);
+            resetButton(button9);
+            isX = true;
+            updateNextTurn();
+        }
+
+        private void resetScores()
+        {
+            newGame();
+            playerXPointsTextBox.Text = 0.ToString();
+            playerOPointsTextBox.Text = 0.ToString();
+        }
+
+        private void resetButton(Button button)
+        {
+            button.BackColor = System.Drawing.SystemColors.Control;
+            button.UseVisualStyleBackColor = true;
+            button.ResetText();
+            button.Enabled = true;
+        }
+
+        private void resetScoresButton_Click(object sender, EventArgs e)
+        {
+            resetScores();
+        }
+
+        private void newGameButton_Click(object sender, EventArgs e)
+        {
+            newGame();
         }
 
         //Button Click Events
@@ -127,4 +194,5 @@ namespace TicTacToe
         }
 
     }
+
 }
